@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Iris Flower Classification API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        /* -------- RESET -------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #e4ebf5);
+            color: #1f2937;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* -------- CONTAINER -------- */
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 32px 36px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        /* -------- HEADER -------- */
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        /* -------- SECTIONS -------- */
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 14px;
+            color: #111827;
+            border-left: 4px solid #6366f1;
+            padding-left: 10px;
+        }
+
+        /* -------- LISTS -------- */
+        ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        li {
+            background: #f9fafb;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        li:hover {
+            background: #eef2ff;
+            border-color: #6366f1;
+        }
+
+        /* -------- API ENDPOINT BOX -------- */
+        .endpoint {
+            background: #111827;
+            color: #f9fafb;
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.85rem;
+        }
+
+        .get {
+            background: #22c55e;
+            color: #022c22;
+        }
+
+        .post {
+            background: #3b82f6;
+            color: #082f49;
+        }
+
+        /* -------- FOOTER -------- */
+        .footer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 40px;
+        }
+
+        /* -------- RESPONSIVE -------- */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>🌸 Iris Flower Classification API</h1>
+        <p class="subtitle">
+            RESTful Machine Learning API built using Flask & Logistic Regression
+        </p>
+
+        <div class="section">
+            <h2>Dataset Features</h2>
+            <ul>
+                {% for feature in feature_names %}
+                <li>{{ feature }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Target Classes</h2>
+            <ul>
+                {% for target in target_names %}
+                <li>{{ target }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>API Endpoints</h2>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                /api/info
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                /api/predict
+            </div>
+        </div>
+
+        <div class="footer">
+            Built for Full Stack AI Lab • Flask ML Deployment Experiment
+        </div>
+
+    </div>
+</body>
+</html>
