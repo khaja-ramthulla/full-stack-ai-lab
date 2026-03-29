@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Study Score Predictor</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================
+   Theme Variables
+========================= */
+
+:root{
+--text:#1e293b;
+--card-bg:rgba(255,255,255,0.75);
+--input-bg:#f1f5f9;
+--border:#e2e8f0;
+--accent:#6366f1;
+--accent-hover:#4f46e5;
+--success:#16a34a;
+}
+
+@media (prefers-color-scheme: dark){
+
+:root{
+--text:#f1f5f9;
+--card-bg:rgba(30,41,59,0.75);
+--input-bg:#334155;
+--border:#475569;
+--accent:#818cf8;
+--accent-hover:#6366f1;
+--success:#22c55e;
+}
+
+}
+
+/* =========================
+   Reset
+========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+color:var(--text);
+overflow:hidden;
+}
+
+/* =========================
+   Animated Gradient
+========================= */
+
+body{
+background:linear-gradient(-45deg,#6366f1,#9333ea,#06b6d4,#3b82f6);
+background-size:400% 400%;
+animation:gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove{
+
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+
+}
+
+/* =========================
+   Floating Particles
+========================= */
+
+.particles span{
+
+position:absolute;
+display:block;
+width:6px;
+height:6px;
+background:white;
+opacity:.4;
+border-radius:50%;
+animation:float 15s linear infinite;
+
+}
+
+@keyframes float{
+
+0%{
+transform:translateY(100vh) scale(0);
+}
+
+100%{
+transform:translateY(-10vh) scale(1);
+}
+
+}
+
+/* =========================
+   Glass Card
+========================= */
+
+.container{
+
+width:420px;
+padding:40px;
+border-radius:18px;
+
+background:var(--card-bg);
+backdrop-filter:blur(20px);
+
+box-shadow:0 20px 50px rgba(0,0,0,.25);
+
+position:relative;
+z-index:2;
+
+transition:.3s;
+
+}
+
+.container:hover{
+transform:translateY(-4px);
+}
+
+/* =========================
+   Header
+========================= */
+
+h1{
+font-size:28px;
+margin-bottom:8px;
+font-weight:600;
+}
+
+.subtitle{
+font-size:14px;
+opacity:.8;
+margin-bottom:28px;
+}
+
+/* =========================
+   Inputs
+========================= */
+
+.input-group{
+margin-bottom:18px;
+}
+
+label{
+font-size:13px;
+margin-bottom:5px;
+display:block;
+}
+
+input{
+
+width:100%;
+padding:12px;
+border-radius:8px;
+
+border:1px solid var(--border);
+background:var(--input-bg);
+
+color:var(--text);
+font-size:14px;
+
+outline:none;
+
+transition:.2s;
+
+}
+
+input:focus{
+
+border-color:var(--accent);
+box-shadow:0 0 0 3px rgba(99,102,241,.2);
+
+}
+
+/* =========================
+   Buttons
+========================= */
+
+button{
+
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+
+font-size:14px;
+font-weight:500;
+
+cursor:pointer;
+
+transition:.2s;
+margin-top:10px;
+
+}
+
+.submit-btn{
+
+background:var(--accent);
+color:white;
+
+}
+
+.submit-btn:hover{
+background:var(--accent-hover);
+}
+
+.train-btn{
+
+background:transparent;
+border:1px solid var(--border);
+color:var(--text);
+
+}
+
+.train-btn:hover{
+background:rgba(255,255,255,.15);
+}
+
+/* =========================
+   Messages
+========================= */
+
+#statusMessage{
+margin-top:16px;
+font-size:14px;
+color:var(--success);
+}
+
+#predictionResult{
+margin-top:12px;
+font-size:16px;
+font-weight:600;
+color:var(--accent);
+}
+
+/* =========================
+   Footer
+========================= */
+
+.footer{
+margin-top:25px;
+font-size:12px;
+opacity:.7;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Floating particles -->
+
+<div class="particles">
+
+<span style="left:10%;animation-delay:0s"></span>
+<span style="left:20%;animation-delay:2s"></span>
+<span style="left:30%;animation-delay:4s"></span>
+<span style="left:40%;animation-delay:6s"></span>
+<span style="left:50%;animation-delay:3s"></span>
+<span style="left:60%;animation-delay:5s"></span>
+<span style="left:70%;animation-delay:1s"></span>
+<span style="left:80%;animation-delay:7s"></span>
+<span style="left:90%;animation-delay:2s"></span>
+
+</div>
+
+<div class="container">
+
+<h1>Study Score Predictor</h1>
+<p class="subtitle">Train a Linear Regression model using MongoDB data</p>
+
+<form id="dataForm">
+
+<div class="input-group">
+<label>Study Hours</label>
+<input type="number" name="hours" step="0.1" required>
+</div>
+
+<div class="input-group">
+<label>Score</label>
+<input type="number" name="score" required>
+</div>
+
+<button type="submit" class="submit-btn">Submit Data</button>
+
+</form>
+
+<button onclick="trainModel()" class="train-btn">Train Model</button>
+
+<div id="statusMessage"></div>
+<div id="predictionResult"></div>
+
+<div class="footer">
+Flask • MongoDB • Machine Learning
+</div>
+
+</div>
+
+<script>
+
+const form=document.getElementById("dataForm");
+const statusMessage=document.getElementById("statusMessage");
+const predictionResult=document.getElementById("predictionResult");
+
+form.addEventListener("submit",async(e)=>{
+
+e.preventDefault();
+
+const formData=new FormData(form);
+
+const response=await fetch("/submit",{
+method:"POST",
+body:formData
+});
+
+const data=await response.json();
+
+statusMessage.innerText=data.message;
+
+form.reset();
+
+});
+
+
+async function trainModel(){
+
+const response=await fetch("/train");
+const data=await response.json();
+
+predictionResult.innerText=data.message;
+
+}
+
+</script>
+
+</body>
+</html>

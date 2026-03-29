@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Flower Predictor</title>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>🌸 Iris Flower Species Predictor</h1>
+    <p class="subtitle">Enter flower measurements to predict the species</p>
+
+    <div class="form-container">
+        <form id="predictionForm">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sepal_length">Sepal Length (cm)</label>
+                    <input type="number" id="sepal_length" step="0.1" min="0"
+                           required placeholder="e.g., 5.1">
+                    <span class="hint">Typical range: 4.3 – 7.9</span>
+                    <br>
+                </div>
+                 <br>
+                <div class="form-group">
+                    <label for="sepal_width">Sepal Width (cm)</label>
+                    <input type="number" id="sepal_width" step="0.1" min="0"
+                           required placeholder="e.g., 3.5">
+                    <span class="hint">Typical range: 2.0 – 4.4</span>
+                    <br>
+                </div>
+            </div>
+             <br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="petal_length">Petal Length (cm)</label>
+                    <input type="number" id="petal_length" step="0.1" min="0"
+                           required placeholder="e.g., 1.4">
+                    <span class="hint">Typical range: 1.0 – 6.9</span>
+                    <br>
+                </div>
+                 <br>
+                <div class="form-group">
+                    <label for="petal_width">Petal Width (cm)</label>
+                    <input type="number" id="petal_width" step="0.1" min="0"
+                           required placeholder="e.g., 0.2">
+                    {% comment %} <span class="hint">Typical range: 0.1 – 2.5</span> {% endcomment %}
+                    <br>
+                </div>
+            </div>
+             <br>   
+            <button type="submit" id="predictBtn">
+                Predict Species
+            </button>
+
+        </form>
+
+        <div class="examples">
+            <h3>Quick Examples:</h3>
+            <button onclick="fillExample(1)">Setosa Example</button>
+            <button onclick="fillExample(2)">Versicolor Example</button>
+            <button onclick="fillExample(3)">Virginica Example</button>
+        </div>
+    </div>
+
+    <div id="result" style="display: none;">
+        <h2>Prediction Result</h2>
+        <p><strong>Predicted Species:</strong> <span id="predictedClass"></span></p>
+
+        <h3>Prediction Confidence</h3>
+        <div id="probBars"></div>
+
+        <h3>Input Values</h3>
+        <div id="inputValues"></div>
+    </div>
+
+    <div id="error" style="display: none; color: red;"></div>
+
+</div>
+
+<!-- JavaScript -->
+<script src="{{ url_for('static', filename='js/predict.js') }}"></script>
+</body>
+</html>

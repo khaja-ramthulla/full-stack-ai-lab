@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MNIST Digit Recognition – Intelligence Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* ===================== DESIGN SYSTEM ===================== */
+:root {
+    --bg-main: radial-gradient(circle at top, #eef2ff, #e0e7ff);
+    --glass: rgba(255,255,255,0.72);
+    --glass-border: rgba(255,255,255,0.35);
+    --text-main: #0f172a;
+    --text-soft: #475569;
+    --accent: #4f46e5;
+    --accent-glow: rgba(79,70,229,0.45);
+}
+
+/* ===================== RESET ===================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===================== BODY ===================== */
+body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: var(--bg-main);
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* ===================== CARD ===================== */
+#main {
+    width: 100%;
+    max-width: 980px;
+    padding: 48px 52px;
+    background: var(--glass);
+    backdrop-filter: blur(18px);
+    border-radius: 28px;
+    border: 1px solid var(--glass-border);
+    box-shadow:
+        0 30px 60px rgba(0,0,0,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    animation: floatIn 1.2s ease forwards;
+}
+
+/* ===================== ENTRY ANIMATION ===================== */
+@keyframes floatIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===================== HEADER ===================== */
+header {
+    text-align: center;
+    margin-bottom: 34px;
+}
+
+header h1 {
+    font-size: 30px;
+    letter-spacing: -0.6px;
+    background: linear-gradient(135deg, #1e1b4b, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% { filter: drop-shadow(0 0 0 transparent); }
+    50% { filter: drop-shadow(0 0 10px var(--accent-glow)); }
+    100% { filter: drop-shadow(0 0 0 transparent); }
+}
+
+header p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: var(--text-soft);
+}
+
+/* ===================== FORM ===================== */
+form {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+input[type="file"] {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px dashed #c7d2fe;
+    background: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+input[type="file"]:hover {
+    background: white;
+    transform: translateY(-1px);
+}
+
+button {
+    padding: 12px 26px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--accent), #312e81);
+    cursor: pointer;
+    box-shadow: 0 12px 25px var(--accent-glow);
+    transition: all 0.25s ease;
+}
+
+button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 18px 35px var(--accent-glow);
+}
+
+/* ===================== LOADER ===================== */
+#loader {
+    width: 36px;
+    height: 36px;
+    margin: 16px auto;
+    border-radius: 50%;
+    border: 4px solid #e0e7ff;
+    border-top: 4px solid var(--accent);
+    animation: spin 0.8s linear infinite;
+    display: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===================== RESULT ===================== */
+#result {
+    text-align: center;
+    margin-top: 20px;
+    padding: 22px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.85);
+    box-shadow: inset 0 0 0 1px #e0e7ff;
+    animation: pop 0.5s ease;
+}
+
+@keyframes pop {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.high { background: #dcfce7; color: #166534; }
+.medium { background: #fef9c3; color: #854d0e; }
+.low { background: #fee2e2; color: #7f1d1d; }
+
+#result img {
+    margin-top: 14px;
+    width: 90px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* ===================== TABLE ===================== */
+h3 {
+    margin: 40px 0 14px;
+    text-align: center;
+    font-size: 18px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+thead {
+    background: rgba(99,102,241,0.15);
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+tbody tr {
+    transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+    background: rgba(99,102,241,0.08);
+}
+
+td img {
+    width: 28px;
+    border-radius: 6px;
+}
+
+/* ===================== CHART ===================== */
+canvas {
+    margin-top: 20px;
+    padding: 14px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.85);
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+    #main {
+        padding: 32px;
+    }
+    form {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="main">
+
+<header>
+    <h1>MNIST Digit Recognition</h1>
+    <p>Interactive Intelligence & Prediction Analytics</p>
+</header>
+
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" accept="image/*" required>
+    <button>Predict</button>
+</form>
+
+<div id="loader"></div>
+<div id="result"></div>
+
+<h3>Recent Predictions</h3>
+<table>
+<thead>
+<tr><th>Image</th><th>Digit</th><th>Time</th></tr>
+</thead>
+<tbody id="historyBody"></tbody>
+</table>
+
+<h3>Digit Distribution</h3>
+<canvas id="digitChart" height="120"></canvas>
+
+</div>
+
+<script>
+let chart;
+
+function badge(c){
+    if(c>0.8) return "high";
+    if(c>0.5) return "medium";
+    return "low";
+}
+
+async function history(){
+    const r = await fetch("/api/history");
+    const d = await r.json();
+    let rows="", count={};
+
+    d.forEach(x=>{
+        rows+=`<tr><td><img src="/static/uploads/${x.filename}"></td>
+        <td>${x.prediction}</td><td>${x.timestamp}</td></tr>`;
+        count[x.prediction]=(count[x.prediction]||0)+1;
+    });
+
+    historyBody.innerHTML=rows;
+
+    if(chart) chart.destroy();
+    chart=new Chart(digitChart,{
+        type:"bar",
+        data:{labels:Object.keys(count),
+        datasets:[{data:Object.values(count),backgroundColor:"#4f46e5"}]},
+        options:{animation:{duration:900},scales:{y:{beginAtZero:true}}}
+    });
+}
+
+uploadForm.onsubmit=async e=>{
+    e.preventDefault();
+    loader.style.display="block";
+    result.innerHTML="";
+    const fd=new FormData(uploadForm);
+    const r=await fetch("/predict",{method:"POST",body:fd});
+    const o=await r.json();
+    loader.style.display="none";
+    result.innerHTML=`<b>Predicted Digit: ${o.prediction}</b>
+    <br><span class="badge ${badge(o.confidence)}">
+    Confidence ${(o.confidence*100).toFixed(1)}%</span>
+    <br><img src="/static/uploads/${o.filename}">`;
+    history();
+};
+
+history();
+</script>
+
+</body>
+</html>
